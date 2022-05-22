@@ -14,3 +14,10 @@ export const screenToSpace = (x, y) => {
     y: cam.y + (mouseY - height / 2) / cam.zoom,
   };
 };
+
+export const spaceToScreen = (spaceX, spaceY) => {
+  return {
+    x: (spaceX - cam.x) * cam.zoom + width / 2,
+    y: (spaceY - cam.y) * cam.zoom + height / 2,
+  };
+};

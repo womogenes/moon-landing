@@ -7,5 +7,5 @@ window.mousePressed = () => {
 };
 
 window.mouseWheel = (event) => {
-  //cam.mouseWheel(mouseX, mouseY, event.delta, 0.5);
+  cam.mouseWheel(mouseX, mouseY, event.delta, 0.5);
 };

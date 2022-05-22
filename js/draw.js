@@ -1,4 +1,5 @@
 import { keys } from './keys.js';
+import { screenToSpace, spaceToScreen } from './utils.js';
 
 const draw = () => {
   // Camera and input updates
@@ -54,7 +55,7 @@ const draw = () => {
   pop();
 
   // Update some numbers _after_ drawing
-  rocket.update(100);
+  rocket.update(1);
 
   // Draw text and other info
   textAlign('left', 'top');

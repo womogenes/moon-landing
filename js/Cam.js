@@ -1,3 +1,5 @@
+import { screenToSpace } from './utils.js';
+
 export class Cam {
   constructor(x, y, zoom, dPan, dZoom) {
     this.x = x;
@@ -12,13 +14,16 @@ export class Cam {
   }
 
   mousePressed(mouseX, mouseY) {
-    this.xOffset = mouseX - this.x;
-    this.yOffset = mouseY - this.y;
+    this.xOffset = mouseX;
+    this.yOffset = mouseY;
+
+    this.initX = this.x;
+    this.initY = this.y;
   }
 
   mouseDragged(mouseX, mouseY) {
-    this.toX = mouseX - this.xOffset;
-    this.toY = mouseY - this.yOffset;
+    this.toX = this.initX - (mouseX - this.xOffset) / cam.zoom;
+    this.toY = this.initY - (mouseY - this.yOffset) / cam.zoom;
   }
 
   mouseWheel(mouseX, mouseY, delta, speed) {
@@ -36,9 +41,10 @@ export class Cam {
       this.toX = this.x;
       this.toY = this.y;
     } else {
-      this.x = lerp(this.x, this.toX, 0.1);
-      this.y = lerp(this.y, this.toY, 0.1);
+      this.x = lerp(this.x, this.toX, 0.5);
+      this.y = lerp(this.y, this.toY, 0.5);
     }
+
     this.zoom = lerp(this.zoom, this.toZoom, 0.1);
   }
 }

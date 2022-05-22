@@ -8,27 +8,25 @@ export class Moon {
     this.pos = new Vector(0, 0);
 
     // Generate some boundary
-    noiseDetail(10, 0.6);
+    let octaves = 10;
+    let falloff = 0.7;
+    let scale = (1 - Math.pow(falloff, octaves)) / (1 - falloff);
+
+    noiseDetail(octaves, falloff);
     this.vertices = [];
     let n = 10000;
-    let detail = 1;
+    let detail = 10;
 
     for (let i = 0; i < n; i++) {
       let angle = (2 * Math.PI * i) / n;
 
-      let x = Math.cos(angle) * this.radius;
-      let y = Math.sin(angle) * this.radius;
-      let z = Math.sin(2 * angle) * this.radius;
-
-      let curRad =
-        this.radius * 0.9 +
+      let sample =
         noise(
-          Math.cos(angle) * detail + 1000,
-          Math.sin(angle) * detail + 1000,
+          Math.cos(angle) * detail + 1e9,
+          Math.sin(angle) * detail + 1e9,
           0
-        ) *
-          this.radius *
-          0.1;
+        ) / scale;
+      let curRad = this.radius + (sample - 0.5) * this.radius * 0.01;
 
       this.vertices.push([Math.cos(angle) * curRad, Math.sin(angle) * curRad]);
     }
@@ -44,9 +42,9 @@ export class Moon {
     endShape('close');
   }
 
-  accOn(pos, mass) {
+  accOn(pos) {
     // Calculate the acceleration exerted on another body
-    let mag = (G * mass) / Vector.sub(this.pos, pos).magSq();
+    let mag = (G * this.mass) / Vector.sub(this.pos, pos).magSq();
     return Vector.mult(Vector.sub(this.pos, pos).normalize(), mag);
   }
 }

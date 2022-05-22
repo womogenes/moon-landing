@@ -5,31 +5,28 @@ const draw = () => {
   cam.update();
   keys();
 
-  // Update some numbers
-  rocket.update(10);
-
-  cam.x = rocket.pos.x;
-  cam.y = rocket.pos.y;
-
   // Draw world
   background(0);
-  translate(width / 2, height / 2);
 
   push();
 
+  translate(width / 2, height / 2);
   scale(cam.zoom);
   translate(-cam.x, -cam.y);
 
   fill('#fff');
-  stroke('#888');
-
+  noStroke();
   moon.display();
+  fill('#ffffff20');
+  ellipse(0, 0, moon.radius * 2, moon.radius * 2);
 
   push();
   translate(rocket.pos.x, rocket.pos.y);
   scale(1 / cam.zoom);
   rocket.display();
   pop();
+
+  ellipse(rocket.pos.x, rocket.pos.y, 1, 1);
 
   /*
   Draw a grid
@@ -56,12 +53,15 @@ const draw = () => {
 
   pop();
 
+  // Update some numbers
+  rocket.update(10);
+
   // Draw text and other info
   textAlign('left', 'top');
   fill('#fff');
   noStroke();
   textSize(24);
-  text(`Zoom: ${cam.zoom}`, -width / 2 + 10, -height / 2 + 10);
+  text(`Zoom: ${cam.zoom}`, 10, 10);
 };
 
 export { draw };

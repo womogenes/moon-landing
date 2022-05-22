@@ -32,21 +32,8 @@ export class Rocket {
     // Small timesteps
     let n = dt;
     for (let i = 0; i < n; i++) {
-      let acc = moon.accOn(this.pos, this.mass);
+      let acc = moon.accOn(this.pos);
       verletStep(this.pos, this.prevPos, acc, 1);
-    }
-
-    // Look into the future
-    let original = this.pos.copy();
-    let p = this.pos.copy();
-    let pp = this.prevPos.copy();
-    let steps = 0;
-
-    this.path = [];
-    for (let i = 0; i < 10000; i++) {
-      let acc = moon.accOn(p, this.mass);
-      verletStep(p, pp, acc, 1);
-      this.path.push(p.copy());
     }
   }
 }

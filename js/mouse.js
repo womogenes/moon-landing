@@ -1,5 +1,3 @@
-// Remember to import this file!
-
 window.mouseDragged = () => {
   cam.mouseDragged(mouseX, mouseY);
 };

@@ -5,3 +5,10 @@ export const verletStep = (pos, prevPos, acc, dt) => {
   prevPos.y = pos.y;
   pos.add(vel);
 };
+
+export const screenToSpace = (x, y) => {
+  return {
+    x: cam.x + (mouseX - width / 2) / cam.zoom,
+    y: cam.y + (mouseY - height / 2) / cam.zoom,
+  };
+};

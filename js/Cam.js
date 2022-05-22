@@ -7,18 +7,16 @@ export class Cam {
 
     this.zoom = zoom;
     this.toZoom = zoom;
+
+    this.following = null;
   }
 
   mousePressed(mouseX, mouseY) {
-    return;
-
     this.xOffset = mouseX - this.x;
     this.yOffset = mouseY - this.y;
   }
 
   mouseDragged(mouseX, mouseY) {
-    return;
-
     this.toX = mouseX - this.xOffset;
     this.toY = mouseY - this.yOffset;
   }
@@ -31,5 +29,16 @@ export class Cam {
     }
   }
 
-  update() {}
+  update() {
+    if (this.following !== null) {
+      this.x = this.following.x;
+      this.y = this.following.y;
+      this.toX = this.x;
+      this.toY = this.y;
+    } else {
+      this.x = lerp(this.x, this.toX, 0.1);
+      this.y = lerp(this.y, this.toY, 0.1);
+    }
+    this.zoom = lerp(this.zoom, this.toZoom, 0.1);
+  }
 }

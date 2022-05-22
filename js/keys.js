@@ -1,5 +1,17 @@
 // Keyboard inputs
 
+window.keyPressed = () => {
+  switch (keyCode) {
+    case 70: // F
+      if (cam.following) {
+        cam.following = null;
+      } else {
+        cam.following = rocket.pos;
+      }
+      return;
+  }
+};
+
 // Camera panning
 export const keys = () => {
   if (!keyIsPressed) return;
@@ -11,13 +23,13 @@ export const keys = () => {
       cam.toY += panSpeed;
       return;
     case 65: // A
-      rocket.toX -= panSpeed;
+      cam.toX -= panSpeed;
       return;
     case 83: // S
       cam.toY -= panSpeed;
       return;
     case 68: // D
-      rocket.toX += panSpeed;
+      cam.toX += panSpeed;
       return;
 
     case 90: // Z

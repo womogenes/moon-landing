@@ -15,28 +15,32 @@ window.keyPressed = () => {
 // Camera panning
 export const keys = () => {
   if (!keyIsPressed) return;
-  let panSpeed = 5;
+  let panSpeed = 5 / cam.zoom;
   let zoomSpeed = 0.05;
 
-  switch (keyCode) {
-    case 87: // W
-      cam.toY += panSpeed;
-      return;
-    case 65: // A
-      cam.toX -= panSpeed;
-      return;
-    case 83: // S
-      cam.toY -= panSpeed;
-      return;
-    case 68: // D
-      cam.toX += panSpeed;
-      return;
+  if (keyIsDown(87)) {
+    // W
+    cam.toY -= panSpeed;
+  }
+  if (keyIsDown(65)) {
+    // A
+    cam.toX -= panSpeed;
+  }
+  if (keyIsDown(83)) {
+    //S
+    cam.toY += panSpeed;
+  }
+  if (keyIsDown(68)) {
+    //D
+    cam.toX += panSpeed;
+  }
 
-    case 90: // Z
-      cam.toZoom /= zoomSpeed + 1;
-      return;
-    case 88: // X
-      cam.toZoom *= zoomSpeed + 1;
-      return;
+  if (keyIsDown(90)) {
+    // Z
+    cam.toZoom /= zoomSpeed + 1;
+  }
+  if (keyIsDown(88)) {
+    // X
+    cam.toZoom *= zoomSpeed + 1;
   }
 };

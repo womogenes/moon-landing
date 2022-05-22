@@ -11,20 +11,20 @@ export const keys = () => {
       cam.toY += panSpeed;
       return;
     case 65: // A
-      cam.toX += panSpeed;
+      rocket.toX -= panSpeed;
       return;
     case 83: // S
       cam.toY -= panSpeed;
       return;
     case 68: // D
-      cam.toX -= panSpeed;
+      rocket.toX += panSpeed;
       return;
 
     case 90: // Z
-      cam.mouseWheel(mouseX, mouseY, 1, zoomSpeed);
+      cam.toZoom /= zoomSpeed + 1;
       return;
-    case 88:
-      cam.mouseWheel(mouseX, mouseY, -1, zoomSpeed);
+    case 88: // X
+      cam.toZoom *= zoomSpeed + 1;
       return;
   }
 };

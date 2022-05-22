@@ -18,8 +18,8 @@ window.setup = () => {
   window.cam = new Cam(0, 0, (width / moon.radius) * 0.2, 0.5, 0.5); // Probably want to move this into config file later
 
   window.rocket = new Rocket(
-    new Vector(moon.radius + 2000e3, 0),
-    new Vector(0, -60),
+    new Vector(moon.radius + 10, 0),
+    new Vector(0, -95),
     -Math.PI / 2,
     25000,
     20000

@@ -75,10 +75,11 @@ export class Rocket {
 
     // Find the periapsis ig
     let apsis = Vector.sub(this.pos, moon.pos).rotate(-nu).normalize();
-    let periapsis = Vector.mult(apsis, a * (1 - e));
-    let apoapsis = Vector.mult(apsis, -a * (1 + e));
+    this.periapsis = Vector.mult(apsis, a * (1 - e));
+    this.apoapsis = Vector.mult(apsis, -a * (1 + e));
 
-    // Just integrate!
+    // Now integrate to find flight path
+    // Use velocity Verlet (non-reversible)
     let curPos = this.pos.copy();
     let curVel = this.vel.copy();
 
@@ -86,20 +87,6 @@ export class Rocket {
     for (let i = 0; i < 210; i++) {
       verletStep(curPos, curVel, moon.accOn(curPos), 50);
       this.path.push(curPos.copy());
-    }
-
-    // Find apses
-    let minAlt = Infinity;
-    let maxAlt = 0;
-    for (let point of this.path) {
-      let curAlt = point.dist(moon.pos);
-      if (curAlt < minAlt) {
-        minAlt = curAlt;
-        this.periapsis = point;
-      } else if (curAlt > maxAlt) {
-        maxAlt = curAlt;
-        this.apoapsis = point;
-      }
     }
   }
 }

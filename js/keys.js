@@ -11,12 +11,17 @@ window.keyPressed = () => {
       break;
 
     case 37: // Left arrow
-      timewarp *= 0.5;
+      if (timewarp > 1) timewarp *= 0.5;
       break;
 
     case 39: // Right arrow
-      timewarp *= 2;
+      if (timewarp < 128) timewarp *= 2;
       break;
+
+    case 48: // 0
+      cam.toX = 0;
+      cam.toY = 0;
+      cam.toZoom = (width / moon.radius) * 0.2;
   }
 };
 

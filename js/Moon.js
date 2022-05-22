@@ -48,4 +48,9 @@ export class Moon {
     let mag = (G * this.mass) / Vector.sub(this.pos, pos).magSq();
     return Vector.mult(Vector.sub(this.pos, pos).normalize(), mag);
   }
+
+  altitude(pos) {
+    // Calculate relative altitude of point
+    return this.pos.dist(pos) - this.radius;
+  }
 }

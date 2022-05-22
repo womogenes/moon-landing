@@ -71,18 +71,44 @@ const draw = () => {
   endShape();
 
   // Apses
-  strokeWeight(6);
+  let periScreen = spaceToScreen(rocket.periapsis);
+  let apoScreen = spaceToScreen(rocket.apoapsis);
 
-  let periapsis = spaceToScreen(rocket.periapsis);
-  point(periapsis.x, periapsis.y);
+  strokeWeight(6);
+  point(periScreen.x, periScreen.y);
+  point(apoScreen.x, apoScreen.y);
+
+  noStroke();
+  fill('#fff');
+  textSize(18);
+  text(
+    `${nf(moon.altitude(rocket.periapsis), 0, 1)} m`,
+    periScreen.x + 10,
+    periScreen.y
+  );
+  text(
+    `${nf(moon.altitude(rocket.apoapsis), 0, 1)} m`,
+    apoScreen.x + 10,
+    apoScreen.y
+  );
 
   // Draw text and other info
   textAlign('left', 'top');
   fill('#fff');
   noStroke();
   textSize(24);
-  text(`Zoom: ${cam.zoom}`, 10, 10);
-  text(`Timewarp: ${timewarp}`, 10, 40);
+  text(`Zoom: ${nf(cam.zoom, 0, 10)}`, 20, 20);
+  text(`Timewarp: ${timewarp}`, 20, 50);
+  text(
+    `Position: ${nf(rocket.pos.x, 0, 3)}, ${nf(rocket.pos.y, 0, 3)}`,
+    20,
+    80
+  );
+  text(
+    `Altitude: ${nf(rocket.pos.dist(moon.pos) - moon.radius, 0, 2)} m`,
+    20,
+    110
+  );
 };
 
 export { draw };

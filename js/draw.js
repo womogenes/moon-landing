@@ -3,6 +3,10 @@ import { screenToSpace, spaceToScreen } from './utils.js';
 
 const draw = () => {
   // Camera and input updates
+
+  // Update some numbers _after_ drawing
+  rocket.update(timewarp);
+
   cam.update();
   keys();
 
@@ -10,7 +14,6 @@ const draw = () => {
   background(0);
 
   push();
-
   translate(width / 2, height / 2);
   scale(cam.zoom);
   translate(-cam.x, -cam.y);
@@ -54,8 +57,24 @@ const draw = () => {
 
   pop();
 
-  // Update some numbers _after_ drawing
-  rocket.update(10);
+  // Draw rocket path
+  beginShape('lines');
+  noFill();
+  stroke('#ffffff80');
+  strokeWeight(3);
+  let curRocketPos = spaceToScreen(rocket.pos);
+  curveVertex(curRocketPos.x, curRocketPos.y);
+  for (let point of rocket.path) {
+    point = spaceToScreen(point);
+    curveVertex(point.x, point.y);
+  }
+  endShape();
+
+  // Apses
+  strokeWeight(6);
+
+  let periapsis = spaceToScreen(rocket.periapsis);
+  point(periapsis.x, periapsis.y);
 
   // Draw text and other info
   textAlign('left', 'top');
@@ -63,6 +82,7 @@ const draw = () => {
   noStroke();
   textSize(24);
   text(`Zoom: ${cam.zoom}`, 10, 10);
+  text(`Timewarp: ${timewarp}`, 10, 40);
 };
 
 export { draw };

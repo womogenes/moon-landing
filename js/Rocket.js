@@ -16,6 +16,10 @@ export class Rocket {
     this.fuel = fuel;
 
     this.accelerating = false;
+
+    this.path = [];
+    this.periapsis = null;
+    this.apoapsis = null;
   }
 
   display() {
@@ -37,64 +41,29 @@ export class Rocket {
     // Small timesteps
     verletStep(this.pos, this.vel, this.getAcc(), dt);
 
-    /*
-      Orbit analysis!
-      This is super haphazard, will improve later
-        - https://space.stackexchange.com/questions/1904/how-to-programmatically-calculate-orbital-elements-using-position-velocity-vecto
-        https://space.stackexchange.com/questions/8911/determining-orbital-position-at-a-future-point-in-time
-    */
-    let rVec = Vector.sub(this.pos, moon.pos);
-    let vVec = this.vel;
+    // Don't do orbit analysis :P
+    // Just integrate!
+    let curPos = this.pos.copy();
+    let curVel = this.vel.copy();
 
-    let v = vVec.mag();
-    let r = Vector.sub(this.pos, moon.pos).mag();
-
-    let eVec = Vector.sub(
-      Vector.mult(rVec, v * v - moon.mu / r),
-      Vector.mult(vVec, rVec.dot(vVec))
-    ).div(moon.mu);
-
-    let e = eVec.mag();
-    let E = (v * v) / 2 - moon.mu / r; // Specific mechanical energy
-    let a = -moon.mu / (2 * E); // Semi-major axis
-    let b = a * Math.sqrt(1 - e * e); // Semi-minor axis
-
-    if (e >= 1) {
-      // Weird parabolic or hyperbolic orbits; can't deal with this now
-      return;
+    this.path = [this.pos.copy()];
+    for (let i = 0; i < 210; i++) {
+      verletStep(curPos, curVel, moon.accOn(curPos), 50);
+      this.path.push(curPos.copy());
     }
 
-    let nu = Math.acos(eVec.dot(rVec) / (e * r));
-    if (rVec.dot(vVec) < 0) {
-      nu = Math.PI * 2 - nu;
+    // Find apses
+    let minAlt = Infinity;
+    let maxAlt = 0;
+    for (let point of this.path) {
+      let curAlt = point.dist(moon.pos);
+      if (curAlt < minAlt) {
+        minAlt = curAlt;
+        this.periapsis = point;
+      } else if (curAlt > maxAlt) {
+        maxAlt = curAlt;
+        this.apoapsis = point;
+      }
     }
-
-    // Find the periapsis ig
-    let apsis = Vector.sub(this.pos, moon.pos).rotate(-nu).normalize();
-    let periapsis = Vector.mult(apsis, a * (1 - e));
-    let apoapsis = Vector.mult(apsis, -a * (1 + e));
-
-    let ellipseCenter = spaceToScreen(
-      Vector.mult(apsis, -Math.sqrt(a * a - b * b))
-    );
-    periapsis = spaceToScreen(periapsis);
-    apoapsis = spaceToScreen(apoapsis);
-    a *= cam.zoom;
-    b *= cam.zoom;
-
-    noFill();
-    strokeWeight(5);
-    stroke('#ffffffb0');
-
-    point(periapsis.x, periapsis.y);
-    point(apoapsis.x, apoapsis.y);
-
-    push();
-    translate(ellipseCenter.x, ellipseCenter.y);
-    rotate(Math.atan2(apsis.y, apsis.x));
-
-    strokeWeight(3);
-    ellipse(0, 0, a, b);
-    pop();
   }
 }

@@ -7,6 +7,7 @@ import './mouse.js';
 // Globals
 window.Vector = p5.Vector;
 window.G = 6.6743e-11;
+window.timewarp = 1;
 
 window.setup = () => {
   const canvas = createCanvas(windowWidth, windowHeight);

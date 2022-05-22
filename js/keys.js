@@ -8,7 +8,15 @@ window.keyPressed = () => {
       } else {
         cam.following = rocket.pos;
       }
-      return;
+      break;
+
+    case 37: // Left arrow
+      timewarp *= 0.5;
+      break;
+
+    case 39: // Right arrow
+      timewarp *= 2;
+      break;
   }
 };
 

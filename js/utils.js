@@ -1,9 +1,11 @@
-export const verletStep = (pos, prevPos, acc, dt) => {
-  let vel = Vector.add(Vector.sub(pos, prevPos), Vector.mult(acc, dt * dt));
+// From https://en.wikipedia.org/wiki/Verlet_integration#Velocity_Verlet
+export const verletStep = (pos, vel, acc, dt) => {
+  pos.add(Vector.mult(vel, dt));
+  pos.add(Vector.mult(acc, Math.pow(dt, 2) * 0.5));
 
-  prevPos.x = pos.x;
-  prevPos.y = pos.y;
-  pos.add(vel);
+  let nextAcc = moon.accOn(pos);
+
+  vel.add(Vector.mult(Vector.add(acc, nextAcc), dt * 0.5));
 };
 
 export const screenToSpace = (x, y) => {

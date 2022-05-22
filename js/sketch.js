@@ -18,11 +18,13 @@ window.setup = () => {
   window.moon = new Moon(1.73734e6, 7.3459e22, '#888888');
   window.cam = new Cam(0, 0, (width / moon.radius) * 0.2, 0.5, 0.5); // Probably want to move this into config file later
 
-  let initRocketPos = new Vector(moon.radius, 0);
-  let rocketVel = Math.sqrt(moon.accOn(initRocketPos).mag() * moon.radius);
+  let initRocketPos = new Vector(moon.radius + 600e3, 0);
+  let rocketVel = Math.sqrt(
+    moon.accOn(initRocketPos).mag() * Vector.sub(moon.pos, initRocketPos).mag()
+  );
   window.rocket = new Rocket(
     initRocketPos,
-    new Vector(0, -rocketVel),
+    new Vector(0, rocketVel),
     -Math.PI / 2,
     25000,
     20000

@@ -53,8 +53,8 @@ const draw = () => {
 
   pop();
 
-  // Update some numbers
-  rocket.update(10);
+  // Update some numbers _after_ drawing
+  rocket.update(100);
 
   // Draw text and other info
   textAlign('left', 'top');

@@ -8,14 +8,13 @@ import { verletStep } from './utils.js';
 export class Rocket {
   constructor(pos, vel, heading, mass, fuel) {
     this.pos = pos;
+    this.vel = vel;
+
     this.heading = heading;
     this.mass = mass;
     this.fuel = fuel;
 
     this.accelerating = false;
-
-    // Verlet stuff
-    this.prevPos = Vector.sub(pos, vel);
   }
 
   display() {
@@ -28,12 +27,13 @@ export class Rocket {
     endShape('close');
   }
 
+  getAcc() {
+    // Get current acceleration
+    return moon.accOn(this.pos); // Just gravity for now; will include engines and stuff later
+  }
+
   update(dt) {
     // Small timesteps
-    let n = dt;
-    for (let i = 0; i < n; i++) {
-      let acc = moon.accOn(this.pos);
-      verletStep(this.pos, this.prevPos, acc, 1);
-    }
+    verletStep(this.pos, this.vel, this.getAcc(), dt);
   }
 }

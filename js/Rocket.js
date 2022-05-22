@@ -3,8 +3,7 @@
   This is where physics stuff comes in!
  */
 
-import { Cam } from './Cam.js';
-import { spaceToScreen, verletStep } from './utils.js';
+import { labelAroundMoon, spaceToScreen, verletStep } from './utils.js';
 
 export class Rocket {
   constructor(pos, vel, heading, mass, fuel) {
@@ -15,7 +14,8 @@ export class Rocket {
     this.mass = mass;
     this.fuel = fuel;
 
-    this.accelerating = false;
+    this.throttle = 0.5;
+    this.engineOn = false;
 
     this.path = [];
     this.periapsis = null;
@@ -23,9 +23,20 @@ export class Rocket {
   }
 
   display() {
-    fill('#fff');
-    noStroke();
+    if (this.engineOn && this.throttle > 0) {
+      console.log('hey');
+      beginShape('lines');
+      noStroke();
+      fill('#ff0000');
+      vertex(-12, 0);
+      vertex(-5, 4);
+      vertex(-5, -4);
+      endShape('close');
+    }
+
     beginShape('lines');
+    noStroke();
+    fill('#fff');
     vertex(8, 0);
     vertex(-5, 5);
     vertex(-5, -5);
@@ -38,8 +49,18 @@ export class Rocket {
   }
 
   update(dt) {
-    // Small timesteps
-    verletStep(this.pos, this.vel, this.getAcc(), dt);
+    let engineAcc = this.engineOn
+      ? Vector.fromAngle(this.heading).mult(0.01 * this.throttle * dt)
+      : new Vector(0, 0);
+
+    verletStep(
+      this.pos,
+      this.vel,
+      function (pos) {
+        return moon.accOn(pos).add(engineAcc);
+      },
+      dt
+    );
 
     /*
       Orbit analysis!
@@ -61,32 +82,72 @@ export class Rocket {
     let e = eVec.mag();
     let E = (v * v) / 2 - moon.mu / r; // Specific mechanical energy
     let a = -moon.mu / (2 * E); // Semi-major axis
-    let b = a * Math.sqrt(1 - e * e); // Semi-minor axis
+    let b = a * Math.s;
 
-    if (e >= 1) {
-      // Weird parabolic or hyperbolic orbits; can't deal with this now
-      return;
-    }
-
-    let nu = Math.acos(eVec.dot(rVec) / (e * r));
-    if (rVec.dot(vVec) < 0) {
+    let nu = Math.acos(eVec.dot(rVec) / (e * r)); // True anomaly
+    let direction = Math.sign(rVec.dot(vVec)); // -1 for clockwise, 1 for counterclockwise
+    if (direction < 0) {
       nu = Math.PI * 2 - nu;
     }
+    let apsis = Vector.sub(this.pos, moon.pos)
+      .rotate(direction * nu)
+      .normalize();
 
-    // Find the periapsis ig
-    let apsis = Vector.sub(this.pos, moon.pos).rotate(-nu).normalize();
-    this.periapsis = Vector.mult(apsis, a * (1 - e));
-    this.apoapsis = Vector.mult(apsis, -a * (1 + e));
+    labelAroundMoon(nu, this.pos);
 
-    // Now integrate to find flight path
+    // Integrate to find flight path
     // Use velocity Verlet (non-reversible)
     let curPos = this.pos.copy();
     let curVel = this.vel.copy();
+    let prevPos = this.pos.copy();
 
     this.path = [this.pos.copy()];
-    for (let i = 0; i < 210; i++) {
-      verletStep(curPos, curVel, moon.accOn(curPos), 50);
+    let i = 0;
+    let angle = 0;
+    let terminateNext = false;
+
+    while (i < 2e3) {
+      // i < 2e4 && (i < 10 || this.pos.dist(curPos) > 2000)) {
+      verletStep(
+        curPos,
+        curVel,
+        function (pos) {
+          return moon.accOn(pos);
+        },
+        100
+      );
       this.path.push(curPos.copy());
+
+      if (terminateNext) {
+        break;
+      }
+
+      angle += Math.abs(
+        Vector.sub(curPos, moon.pos).angleBetween(Vector.sub(prevPos, moon.pos))
+      );
+      if (angle >= Math.PI * 2) {
+        this.path[this.path.length - 1] = this.pos.copy();
+        break;
+      }
+
+      prevPos = curPos.copy();
+      i++;
+
+      // Into the moon
+      if (moon.pos.dist(curPos) < moon.radius) {
+        terminateNext = true;
+      }
     }
+
+    if (e >= 1) {
+      // Weird parabolic or hyperbolic orbits; can't deal with this now
+      this.periapsis = null;
+      this.apoapsis = null;
+      return;
+    }
+
+    // Find the periapsis
+    this.periapsis = Vector.mult(apsis, a * (1 - e));
+    this.apoapsis = Vector.mult(apsis, -a * (1 + e));
   }
 }

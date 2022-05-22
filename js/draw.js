@@ -1,11 +1,8 @@
 import { keys } from './keys.js';
-import { screenToSpace, spaceToScreen } from './utils.js';
+import { labelAroundMoon, screenToSpace, spaceToScreen } from './utils.js';
 
 const draw = () => {
   // Camera and input updates
-
-  // Update some numbers _after_ drawing
-  rocket.update(timewarp);
 
   cam.update();
   keys();
@@ -13,24 +10,39 @@ const draw = () => {
   // Draw world
   background(0);
 
+  // Update some numbers
+  rocket.update(timewarp);
+
   push();
   translate(width / 2, height / 2);
   scale(cam.zoom);
   translate(-cam.x, -cam.y);
 
+  // Draw rocket flight path
+  beginShape('lines');
+  noFill();
+  stroke('#ffffff80');
+  strokeWeight(3 / cam.zoom);
+  curveVertex(rocket.pos.x, rocket.pos.y);
+  for (let p of rocket.path) {
+    curveVertex(p.x, p.y);
+  }
+  endShape();
+
   fill('#fff');
   noStroke();
   moon.display();
-  fill('#ffffff20');
+  fill('#ffffff30');
   ellipse(0, 0, moon.radius, moon.radius);
 
   push();
   translate(rocket.pos.x, rocket.pos.y);
   scale(1 / cam.zoom);
+  rotate(rocket.heading);
   rocket.display();
   pop();
 
-  ellipse(rocket.pos.x, rocket.pos.y, 1, 1);
+  ellipse(rocket.pos.x, rocket.pos.y, 10, 10);
 
   /*
   Draw a grid
@@ -57,40 +69,20 @@ const draw = () => {
 
   pop();
 
-  // Draw rocket path
-  beginShape('lines');
-  noFill();
-  stroke('#ffffff80');
-  strokeWeight(3);
-  let curRocketPos = spaceToScreen(rocket.pos);
-  curveVertex(curRocketPos.x, curRocketPos.y);
-  for (let point of rocket.path) {
-    point = spaceToScreen(point);
-    curveVertex(point.x, point.y);
-  }
-  endShape();
-
   // Apses
-  let periScreen = spaceToScreen(rocket.periapsis);
-  let apoScreen = spaceToScreen(rocket.apoapsis);
+  if (cam.zoom > 3e-5 && rocket.periapsis) {
+    point(rocket.periapsis.x, rocket.periapsis.y);
+    point(rocket.apoapsis.x, rocket.apoapsis.y);
 
-  strokeWeight(6);
-  point(periScreen.x, periScreen.y);
-  point(apoScreen.x, apoScreen.y);
-
-  noStroke();
-  fill('#fff');
-  textSize(18);
-  text(
-    `${nf(moon.altitude(rocket.periapsis), 0, 1)} m`,
-    periScreen.x + 10,
-    periScreen.y
-  );
-  text(
-    `${nf(moon.altitude(rocket.apoapsis), 0, 1)} m`,
-    apoScreen.x + 10,
-    apoScreen.y
-  );
+    labelAroundMoon(
+      `${nf(moon.altitude(rocket.periapsis), 0, 1)} m`,
+      rocket.periapsis
+    );
+    labelAroundMoon(
+      `${nf(moon.altitude(rocket.apoapsis), 0, 1)} m`,
+      rocket.apoapsis
+    );
+  }
 
   // Draw text and other info
   textAlign('left', 'top');
@@ -98,7 +90,7 @@ const draw = () => {
   noStroke();
   textSize(24);
   text(`Zoom: ${nf(cam.zoom, 0, 10)}`, 20, 20);
-  text(`Timewarp: ${timewarp}`, 20, 50);
+  text(`Timewarp: ${timewarp}x`, 20, 50);
   text(
     `Position: ${nf(rocket.pos.x, 0, 3)}, ${nf(rocket.pos.y, 0, 3)}`,
     20,
@@ -109,6 +101,10 @@ const draw = () => {
     20,
     110
   );
+
+  textAlign('right', 'top');
+  text(`Throttle: ${nf(rocket.throttle * 100, 0, 1)}%`, width - 20, 20);
+  text(`Engine ${rocket.engineOn ? 'on' : 'off'}`, width - 20, 50);
 };
 
 export { draw };

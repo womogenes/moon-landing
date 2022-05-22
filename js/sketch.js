@@ -18,10 +18,10 @@ window.setup = () => {
   ellipseMode('radius');
   textFont('Inconsolata');
 
-  window.moon = new Moon(1.73734e6, 7.3459e22, '#888888');
+  window.moon = new Moon(1.73734e4, 1e16, '#888');
   window.cam = new Cam(0, 0, (width / moon.radius) * 0.2, 0.5, 0.5); // Probably want to move this into config file later
 
-  let initRocketPos = new Vector(moon.radius + 600e3, 0);
+  let initRocketPos = new Vector(moon.radius + 10e3, 0);
   let rocketVel =
     Math.sqrt(
       moon.accOn(initRocketPos).mag() *
@@ -29,8 +29,8 @@ window.setup = () => {
     ) + 1;
   window.rocket = new Rocket(
     initRocketPos,
-    new Vector(0, rocketVel),
-    -Math.PI / 2,
+    new Vector(0, -rocketVel),
+    Math.PI / 2,
     25000,
     20000
   );

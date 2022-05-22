@@ -19,7 +19,7 @@ const draw = () => {
   noStroke();
   moon.display();
   fill('#ffffff20');
-  ellipse(0, 0, moon.radius * 2, moon.radius * 2);
+  ellipse(0, 0, moon.radius, moon.radius);
 
   push();
   translate(rocket.pos.x, rocket.pos.y);
@@ -55,7 +55,7 @@ const draw = () => {
   pop();
 
   // Update some numbers _after_ drawing
-  rocket.update(1);
+  rocket.update(10);
 
   // Draw text and other info
   textAlign('left', 'top');

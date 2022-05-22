@@ -6,6 +6,7 @@ export class Moon {
     this.mass = mass;
     this.color = color;
     this.pos = new Vector(0, 0);
+    this.mu = G * this.mass;
 
     // Generate some boundary
     let octaves = 10;

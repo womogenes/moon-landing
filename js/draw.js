@@ -4,14 +4,13 @@ import { labelAroundMoon, screenToSpace, spaceToScreen } from './utils.js';
 const draw = () => {
   // Camera and input updates
 
-  cam.update();
-  keys();
-
   // Draw world
   background(0);
 
   // Update some numbers
   rocket.update(timewarp);
+  cam.update();
+  keys();
 
   push();
   translate(width / 2, height / 2);
@@ -23,10 +22,14 @@ const draw = () => {
   noFill();
   stroke('#ffffff80');
   strokeWeight(3 / cam.zoom);
-  curveVertex(rocket.pos.x, rocket.pos.y);
+  curveVertex(rocket.path[0].x, rocket.path[0].y);
   for (let p of rocket.path) {
     curveVertex(p.x, p.y);
   }
+  curveVertex(
+    rocket.path[rocket.path.length - 1].x,
+    rocket.path[rocket.path.length - 1].y
+  );
   endShape();
 
   fill('#fff');
@@ -96,10 +99,11 @@ const draw = () => {
     20,
     80
   );
+  text(`Speed: ${nf(rocket.vel.mag(), 0, 3)} m/s`, 20, 110);
   text(
     `Altitude: ${nf(rocket.pos.dist(moon.pos) - moon.radius, 0, 2)} m`,
     20,
-    110
+    140
   );
 
   textAlign('right', 'top');

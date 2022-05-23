@@ -24,7 +24,6 @@ export class Rocket {
 
   display() {
     if (this.engineOn && this.throttle > 0) {
-      console.log('hey');
       beginShape('lines');
       noStroke();
       fill('#ff0000');
@@ -85,15 +84,13 @@ export class Rocket {
     let b = a * Math.s;
 
     let nu = Math.acos(eVec.dot(rVec) / (e * r)); // True anomaly
-    let direction = Math.sign(rVec.dot(vVec)); // -1 for clockwise, 1 for counterclockwise
-    if (direction < 0) {
+    if (rVec.dot(vVec) < 0) {
       nu = Math.PI * 2 - nu;
     }
+    let direction = Math.sign(vVec.cross(rVec).z); // -1 for clockwise, 1 for counterclockwise
     let apsis = Vector.sub(this.pos, moon.pos)
       .rotate(direction * nu)
       .normalize();
-
-    labelAroundMoon(nu, this.pos);
 
     // Integrate to find flight path
     // Use velocity Verlet (non-reversible)
@@ -106,7 +103,8 @@ export class Rocket {
     let angle = 0;
     let terminateNext = false;
 
-    while (i < 2e3) {
+    while (i < 2e5) {
+      // Limit is to prevent an infinite loop
       // i < 2e4 && (i < 10 || this.pos.dist(curPos) > 2000)) {
       verletStep(
         curPos,
@@ -126,7 +124,8 @@ export class Rocket {
         Vector.sub(curPos, moon.pos).angleBetween(Vector.sub(prevPos, moon.pos))
       );
       if (angle >= Math.PI * 2) {
-        this.path[this.path.length - 1] = this.pos.copy();
+        this.path.pop();
+        this.path.push(this.pos.copy());
         break;
       }
 

@@ -22,7 +22,7 @@ export const labelAroundMoon = (label, loc) => {
   let hAlign, vAlign;
 
   hAlign = x < moon.pos.x ? 'right' : 'left';
-  vAlign = y < moon.pos.y ? 'top' : 'bottom';
+  vAlign = y < moon.pos.y ? 'bottom' : 'top';
   xOffset = -20 * Math.sign(moon.pos.x - x);
   yOffset = -20 * Math.sign(moon.pos.y - y);
 

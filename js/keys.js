@@ -10,6 +10,10 @@ window.keyPressed = () => {
       }
       break;
 
+    case 75: // K
+      rocket.vel = new Vector(0, 0);
+      break;
+
     case 188: // ,
       if (timewarp > 1 / 1024) timewarp *= 0.5;
       break;
@@ -22,7 +26,7 @@ window.keyPressed = () => {
     case 27: // 0
       cam.toX = 0;
       cam.toY = 0;
-      cam.toZoom = (width / moon.radius) * 0.2;
+      cam.toZoom = (width / moon.radius) * 0.05;
       cam.following = null;
       break;
 

@@ -65,7 +65,7 @@ export class Rocket {
       Orbit analysis!
       This is super haphazard, will improve later
         - https://space.stackexchange.com/questions/1904/how-to-programmatically-calculate-orbital-elements-using-position-velocity-vecto
-        https://space.stackexchange.com/questions/8911/determining-orbital-position-at-a-future-point-in-time
+        - https://space.stackexchange.com/questions/8911/determining-orbital-position-at-a-future-point-in-time
     */
     let rVec = Vector.sub(this.pos, moon.pos);
     let vVec = this.vel;

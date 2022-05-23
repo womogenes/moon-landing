@@ -91,24 +91,43 @@ const draw = () => {
   textAlign('left', 'top');
   fill('#fff');
   noStroke();
-  textSize(24);
-  text(`Zoom: ${nf(cam.zoom, 0, 10)}`, 20, 20);
-  text(`Timewarp: ${timewarp}x`, 20, 50);
+  textSize(18);
+  text(`Timewarp: ${timewarp}x`, 20, 20);
   text(
     `Position: ${nf(rocket.pos.x, 0, 3)}, ${nf(rocket.pos.y, 0, 3)}`,
     20,
-    80
+    50
   );
-  text(`Speed: ${nf(rocket.vel.mag(), 0, 3)} m/s`, 20, 110);
+  text(`Speed: ${nf(rocket.vel.mag(), 0, 3)} m/s`, 20, 80);
   text(
     `Altitude: ${nf(rocket.pos.dist(moon.pos) - moon.radius, 0, 2)} m`,
     20,
-    140
+    110
   );
+
+  textAlign('right', 'bottom');
+  text(`Zoom: ${nf(cam.zoom, 0, 10)}`, width - 20, height - 20);
+  text(`${nf(frameRate(), 0, 1)} fps`, width - 20, height - 50);
 
   textAlign('right', 'top');
   text(`Throttle: ${nf(rocket.throttle * 100, 0, 1)}%`, width - 20, 20);
   text(`Engine ${rocket.engineOn ? 'on' : 'off'}`, width - 20, 50);
+
+  // Information (should make dialog for this later)
+  textAlign('left', 'bottom');
+  textSize(16);
+  text(
+    `Controls
+————————
+WASD       - pan camera
+up/down    - throttle
+left/right - rotate
+F          - toggle ship focus
+0/esc      - reset camera
+space      - toggle engine`,
+    20,
+    height - 20
+  );
 };
 
 export { draw };

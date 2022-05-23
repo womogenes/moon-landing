@@ -120,10 +120,11 @@ const draw = () => {
     `Controls
 ————————
 WASD       - pan camera
-up/down    - throttle
-left/right - rotate
 F          - toggle ship focus
 0/esc      - reset camera
+,/.        - timewarp
+up/down    - throttle
+left/right - rotate ship
 space      - toggle engine`,
     20,
     height - 20

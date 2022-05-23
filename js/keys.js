@@ -19,7 +19,7 @@ window.keyPressed = () => {
       break;
 
     case 190: // .
-      if (timewarp < 128) timewarp *= 2;
+      if (timewarp < 1 << 12) timewarp *= 2;
       break;
 
     case 48:
